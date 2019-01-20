@@ -1,3 +1,10 @@
+# Fork purpose
+This is a fork from deep-diver/EN-FR-MLT-tensorflow to resuse seq2seq model to write Chinese couplet.
+
+I use seq2seq model to predict right roll from left roll of one couplet. It is very similar with translation. The left roll likes source language and right roll likes target language in translation.
+
+The core part of code is the same with parent repository. The main different is input and output. 
+
 #MLT (EN to FR ) TensorFlow
 
 In this project, I am going to build language translation model called `seq2seq model or encoder-decoder model` in TensorFlow. The objective of the model is translating English sentences to French sentences. I am going to show the detailed steps, and they will answer to the questions like `how to preprocess the dataset`, `how to define inputs`, `how to define encoder model`, `how to define decoder model`, `how to build the entire seq2seq model`, `how to calculate the loss and clip gradients`, and `how to train and get prediction`. Please open the IPython notebook file to see the full workflow and detailed descriptions.
