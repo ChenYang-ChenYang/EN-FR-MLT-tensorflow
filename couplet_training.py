@@ -2,12 +2,13 @@ import numpy as np
 import seq2seq_model_core
 from collections import Counter
 import tensorflow as tf
+from datetime import datetime
 
 if __name__ == '__main__':
 
     # load data
-    source_path = 'data/left_roll'
-    target_path = 'data/right_roll'
+    source_path = './data/left_roll'
+    target_path = './data/right_roll'
     source_text = seq2seq_model_core.load_data(source_path)
     target_text = seq2seq_model_core.load_data(target_path)
 
@@ -32,12 +33,12 @@ if __name__ == '__main__':
     side_by_side_sentences = list(zip(left_roll_sentences, right_roll_sentences))[sample_sentence_range[0]:sample_sentence_range[1]]
     print('* Sample sentences range from {} to {}'.format(sample_sentence_range[0], sample_sentence_range[1]))
 
-    for index, sentence in enumerate(side_by_side_sentences):
-        en_sent, fr_sent = sentence
-        print('[{}-th] sentence'.format(index+1))
-        print('\tEN: {}'.format(en_sent))
-        print('\tFR: {}'.format(fr_sent))
-        print()
+    # for index, sentence in enumerate(side_by_side_sentences):
+    #     en_sent, fr_sent = sentence
+    #     print('[{}-th] sentence'.format(index+1))
+    #     print('\tEN: {}'.format(en_sent))
+    #     print('\tFR: {}'.format(fr_sent))
+    #     print()
 
 
     # preprocess and save data
@@ -49,7 +50,7 @@ if __name__ == '__main__':
     # set hyper parameters
     display_step = 300
 
-    epochs = 1
+    epochs = 10
     batch_size = 128
 
     rnn_size = 128
@@ -61,7 +62,7 @@ if __name__ == '__main__':
     learning_rate = 0.001
     keep_probability = 0.5
 
-    save_path = 'checkpoints_1epoch/dev'
+    save_path = 'checkpoints/dev'
     (source_int_text, target_int_text), (source_vocab_to_int, target_vocab_to_int), _ = seq2seq_model_core.load_preprocess()
     max_target_sentence_length = max([len(sentence) for sentence in source_int_text])
 
@@ -152,8 +153,10 @@ if __name__ == '__main__':
                     train_acc = seq2seq_model_core.get_accuracy(target_batch, batch_train_logits)
                     valid_acc = seq2seq_model_core.get_accuracy(valid_targets_batch, batch_valid_logits)
 
-                    print('Epoch {:>3} Batch {:>4}/{} - Train Accuracy: {:>6.4f}, Validation Accuracy: {:>6.4f}, Loss: {:>6.4f}'
-                          .format(epoch_i, batch_i, len(source_int_text) // batch_size, train_acc, valid_acc, loss))
+                    time = datetime.now().replace(microsecond=0)
+                    time_str = time.strftime('%Y-%m-%d-%H-%M')
+                    print('{} Epoch {:>3} Batch {:>4}/{} - Train Accuracy: {:>6.4f}, Validation Accuracy: {:>6.4f}, Loss: {:>6.4f}'
+                          .format(time_str, epoch_i, batch_i, len(source_int_text) // batch_size, train_acc, valid_acc, loss))
 
         # Save Model
         saver = tf.train.Saver()

@@ -21,29 +21,41 @@ if __name__ == '__main__':
     load_path = seq2seq_model_core.load_params()
 
 
-    left_roll = '花 开 富 贵 家 家 乐'
+    left_rolls = ['雪 里 江 山 美',
+                  '爆 竹 一 声 辞 旧 岁',
+                  '花 开 富 贵 家 家 乐',
+                  '天 增 岁 月 人 增 寿',
+                  '创 大 业 千 秋 昌 盛',
+                  '深 院 落 滕 花 ， 石 不 点 头 龙 不 语']
+    for left_roll in left_rolls:
 
-    left_roll = seq2seq_model_core.sentence_to_seq(left_roll, source_vocab_to_int)
+        left_roll = seq2seq_model_core.sentence_to_seq(left_roll, source_vocab_to_int)
 
-    loaded_graph = tf.Graph()
-    with tf.Session(graph=loaded_graph) as sess:
-        # Load saved model
-        loader = tf.train.import_meta_graph(load_path + '.meta')
-        loader.restore(sess, load_path)
+        loaded_graph = tf.Graph()
+        with tf.Session(graph=loaded_graph) as sess:
+            # Load saved model
+            loader = tf.train.import_meta_graph(load_path + '.meta')
+            loader.restore(sess, load_path)
 
-        input_data = loaded_graph.get_tensor_by_name('input:0')
-        logits = loaded_graph.get_tensor_by_name('predictions:0')
-        target_sequence_length = loaded_graph.get_tensor_by_name('target_sequence_length:0')
-        keep_prob = loaded_graph.get_tensor_by_name('keep_prob:0')
+            input_data = loaded_graph.get_tensor_by_name('input:0')
+            logits = loaded_graph.get_tensor_by_name('predictions:0')
+            target_sequence_length = loaded_graph.get_tensor_by_name('target_sequence_length:0')
+            keep_prob = loaded_graph.get_tensor_by_name('keep_prob:0')
 
-        right_roll = sess.run(logits, {input_data: [left_roll]*batch_size,
-                                             target_sequence_length: [len(left_roll)*2]*batch_size,
-                                             keep_prob: 1.0})[0]
+            right_roll = sess.run(logits, {input_data: [left_roll]*batch_size,
+                                                 target_sequence_length: [len(left_roll)*2]*batch_size,
+                                                 keep_prob: 1.0})[0]
 
-    print('Input')
-    print('  上联 Ids:      {}'.format([i for i in left_roll]))
-    print('  上联: {}'.format([source_int_to_vocab[i] for i in left_roll]))
+        # print('Input')
+        # print('  上联 Ids:      {}'.format([i for i in left_roll]))
+        # print('  上联: {}'.format(" ".join(source_int_to_vocab[i] for i in left_roll)))
+        #
+        # print('\nPrediction')
+        # print('  下联 Ids:      {}'.format([i for i in right_roll]))
+        # print('  下联: {}'.format(" ".join(target_int_to_vocab[i] for i in right_roll)))
+        print('\n')
 
-    print('\nPrediction')
-    print('  下联 Ids:      {}'.format([i for i in right_roll]))
-    print('  下联: {}'.format(" ".join([target_int_to_vocab[i] for i in right_roll])))
+        print('上联输入: {}'.format(" ".join(source_int_to_vocab[i] for i in left_roll)))
+        print('下联生成: {}'.format(" ".join(target_int_to_vocab[i] for i in right_roll[:-1])))
+
+    print('\n')

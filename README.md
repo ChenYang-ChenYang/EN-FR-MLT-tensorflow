@@ -3,7 +3,12 @@ This is a fork from deep-diver/EN-FR-MLT-tensorflow to resuse seq2seq model to w
 
 I use seq2seq model to predict right roll from left roll of one couplet. It is very similar with translation. The left roll likes source language and right roll likes target language in translation.
 
-The core part of code is the same with parent repository. The main different is input and output. 
+The core part of code is the same with parent repository. The main different is input and output.
+
+For training, just run couplet_training.py directly. The model will be saved to checkpoints folder.
+
+To create couplet, set left roll to left_roll variable and run couplet_prediction.py directly. The right roll will output on console.
+  
 
 #MLT (EN to FR ) TensorFlow
 
